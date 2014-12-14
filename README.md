@@ -1,76 +1,53 @@
-### Introduction
+### Code
 
-This second programming assignment will require you to write an R
-function that is able to cache potentially time-consuming computations.
-For example, taking the mean of a numeric vector is typically a fast
-operation. However, for a very long vector, it may take too long to
-compute the mean, especially if it has to be computed repeatedly (e.g.
-in a loop). If the contents of a vector are not changing, it may make
-sense to cache the value of the mean so that when we need it again, it
-can be looked up in the cache rather than recomputed. In this
-Programming Assignment you will take advantage of the scoping rules of
-the R language and how they can be manipulated to preserve state inside
-of an R object.
+makeCacheMatrix <- function(x = matrix()) {
+  m<-NULL
+  set<-function(y){
+  x<<-y
+  m<<-NULL
+}
+get<-function() x
+setmatrix<-function(solve) m<<- solve
+getmatrix<-function() m
+list(set=set, get=get,
+   setmatrix=setmatrix,
+   getmatrix=getmatrix)
+}
 
-### Example: Caching the Mean of a Vector
-
-In this example we introduce the `<<-` operator which can be used to
-assign a value to an object in an environment that is different from the
-current environment. Below are two functions that are used to create a
-special object that stores a numeric vector and caches its mean.
-
-The first function, `makeVector` creates a special "vector", which is
-really a list containing a function to
-
-1.  set the value of the vector
-2.  get the value of the vector
-3.  set the value of the mean
-4.  get the value of the mean
-
-<!-- -->
-
-    makeVector <- function(x = numeric()) {
-            m <- NULL
-            set <- function(y) {
-                    x <<- y
-                    m <<- NULL
-            }
-            get <- function() x
-            setmean <- function(mean) m <<- mean
-            getmean <- function() m
-            list(set = set, get = get,
-                 setmean = setmean,
-                 getmean = getmean)
+cacheSolve <- function(x=matrix(), ...) {
+    m<-x$getmatrix()
+    if(!is.null(m)){
+      message("getting cached data")
+      return(m)
     }
+    matrix<-x$get()
+    m<-solve(matrix, ...)
+    x$setmatrix(m)
+    m
+}
 
-The following function calculates the mean of the special "vector"
-created with the above function. However, it first checks to see if the
-mean has already been calculated. If so, it `get`s the mean from the
-cache and skips the computation. Otherwise, it calculates the mean of
-the data and sets the value of the mean in the cache via the `setmean`
-function.
+## Procedure --note comments are with #
 
-    cachemean <- function(x, ...) {
-            m <- x$getmean()
-            if(!is.null(m)) {
-                    message("getting cached data")
-                    return(m)
-            }
-            data <- x$get()
-            m <- mean(data, ...)
-            x$setmean(m)
-            m
-    }
+Procedure 1 and 2: Fork and clone repo
 
-### Assignment: Caching the Inverse of a Matrix
+$ cd ~/Desktop/datascience   #change working directory
+$ git clone https://github.com/babilatachu/ProgrammingAssignment2.git   #URL typed in as Insert on computer not known; ctrl V does not work on all computers on git
+$ cd programmingAssignment2 # changes to directory
 
-Matrix inversion is usually a costly computation and there may be some
-benefit to caching the inverse of a matrix rather than computing it
-repeatedly (there are also alternatives to matrix inversion that we will
-not discuss here). Your assignment is to write a pair of functions that
-cache the inverse of a matrix.
+Then I get
+susanna@BABS ~/Desktop/datascience/ProgrammingAssignment2 (master) # master implies you are in a folder being tracked by git and you are working on the master branch
 
-Write the following functions:
+$git remote -v  # to check on remotes ...shows processes created during cloning. Remote are references to repos not on computer. The result is:
+
+$git remote -v
+origin https://github.com/babilatachu/ProgrammingAssignment2.git (fetch)
+origin https://github.com/babilatachu/ProgrammingAssignment2.git (push)
+
+Open the file in the folder on the desktop with notepad # this is a markdown file
+
+
+
+## Procedure 3 Writing the functions: See code above
 
 1.  `makeCacheMatrix`: This function creates a special "matrix" object
     that can cache its inverse.
@@ -84,22 +61,9 @@ function in R. For example, if `X` is a square invertible matrix, then
 `solve(X)` returns its inverse.
 
 For this assignment, assume that the matrix supplied is always
-invertible.
+invertible. # in case this assumption were not there, it would make sense to first square the matrix so we can then get its inverse!
 
-In order to complete this assignment, you must do the following:
-
-1.  Fork the GitHub repository containing the stub R files at
-    [https://github.com/rdpeng/ProgrammingAssignment2](https://github.com/rdpeng/ProgrammingAssignment2)
-    to create a copy under your own account.
-2.  Clone your forked GitHub repository to your computer so that you can
-    edit the files locally on your own machine.
-3.  Edit the R file contained in the git repository and place your
-    solution in that file (please do not rename the file).
-4.  Commit your completed R file into YOUR git repository and push your
+## Procedure 4 and 5:
+Commit completed R file into my git repository after saving and push your
     git branch to the GitHub repository under your account.
-5.  Submit to Coursera the URL to your GitHub repository that contains
-    the completed R code for the assignment.
 
-### Grading
-
-This assignment will be graded via peer assessment.
